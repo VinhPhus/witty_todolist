@@ -60,7 +60,18 @@ exports.initCronJobs = () => {
         console.log('Season reset completed. New season:', newSeason.name);
       }
     } catch (error) {
-      console.error('Error in cron job:', error);
+      console.error('Error in season reset cron job:', error);
+    }
+  });
+
+  // Chạy vào 00:05 mỗi ngày để tính phạt vắng mặt
+  cron.schedule('5 0 * * *', async () => {
+    try {
+      console.log('Checking for daily inactivity penalties...');
+      const { processDailyInactivityPenalties } = require('./gamificationService');
+      await processDailyInactivityPenalties();
+    } catch (error) {
+      console.error('Error in inactivity penalty cron job:', error);
     }
   });
 };

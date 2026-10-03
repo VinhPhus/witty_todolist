@@ -8,6 +8,7 @@ const connectDB = require('./src/config/db');
 const authRoutes = require('./src/routes/authRoutes');
 const taskRoutes = require('./src/routes/taskRoutes');
 const shopRoutes = require('./src/routes/shopRoutes');
+const leaderboardRoutes = require('./src/routes/leaderboardRoutes');
 const { initSocket } = require('./src/sockets/socket');
 const { initCronJobs } = require('./src/services/cronService');
 
@@ -39,6 +40,7 @@ app.use('/api/', apiLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/shop', shopRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   rankPoints: { type: Number, default: 0 },
   balance: { type: Number, default: 0 },
   totalTasksCompleted: { type: Number, default: 0 },
+  inactiveDays: { type: Number, default: 0 },
   seasonId: { type: mongoose.Schema.Types.ObjectId, ref: 'Season' },
   refreshToken: { type: String }
 }, { timestamps: true });

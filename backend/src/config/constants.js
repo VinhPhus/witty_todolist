@@ -5,9 +5,9 @@ module.exports = {
     'Khó': 20
   },
   RANK_NAMES: [
-    'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grand Master', 'GOD'
+    'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Supreme', 'Extra Supreme'
   ],
-  POINTS_PER_RANK: 100,
+  POINTS_PER_RANK: [100, 150, 200, 250, 300, 350, 400, 400],
   REWARDS_PER_RANK: [
     0, // Lên Bronze (ko thưởng, vì mặc định)
     50, // Lên Silver

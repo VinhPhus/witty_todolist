@@ -30,7 +30,10 @@ exports.register = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
     
-    res.status(201).json({ accessToken, refreshToken, user: { id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl } });
+    res.status(201).json({ accessToken, refreshToken, user: { 
+      id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl,
+      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance
+    } });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -50,7 +53,10 @@ exports.login = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
     
-    res.json({ accessToken, refreshToken, user: { id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl } });
+    res.json({ accessToken, refreshToken, user: { 
+      id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl,
+      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance
+    } });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -79,7 +85,10 @@ exports.googleAuth = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
     
-    res.json({ accessToken, refreshToken, user: { id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl } });
+    res.json({ accessToken, refreshToken, user: { 
+      id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl,
+      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance
+    } });
   } catch (error) {
     console.error(error);
     res.status(401).json({ message: 'Invalid Google token' });

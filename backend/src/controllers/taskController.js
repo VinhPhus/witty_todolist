@@ -45,6 +45,20 @@ exports.createTask = async (req, res) => {
       return res.status(400).json({ message: 'Can only create tasks up to 7 days in advance' });
     }
     
+    // Validate max 10 tasks per day
+    const startOfTaskDay = new Date(taskDate);
+    const endOfTaskDay = new Date(taskDate);
+    endOfTaskDay.setHours(23, 59, 59, 999);
+    
+    const taskCount = await Task.countDocuments({
+      userId: req.user._id,
+      dueDate: { $gte: startOfTaskDay, $lte: endOfTaskDay }
+    });
+    
+    if (taskCount >= 10) {
+      return res.status(400).json({ message: 'Tối đa một ngày chỉ có thể thêm được 10 công việc (task).' });
+    }
+    
     const task = await Task.create({
       userId: req.user._id,
       title,
