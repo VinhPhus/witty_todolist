@@ -3,9 +3,9 @@ import React from 'react';
 const Shop = () => {
   return (
     <div className="p-6 pt-10">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Shop</h1>
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-50 text-center">
-        <p className="text-gray-500">Cửa hàng vật phẩm sẽ hiện ở đây</p>
+      <h1 className="text-3xl font-black mb-6 tracking-tight">Cửa hàng</h1>
+      <div className="glass rounded-[32px] p-6 text-center">
+        <p className="text-gray-500 dark:text-gray-400 font-medium">Cửa hàng vật phẩm sẽ sớm ra mắt</p>
       </div>
     </div>
   );

@@ -11,18 +11,51 @@
   --font-sans: "Plus Jakarta Sans", sans-serif;
 }
 
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-body: radial-gradient(circle at 10% 10%, #dbeafe 0%, #ffffff 40%, #f3e8ff 100%);
+  --bg-app: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --bg-glass: rgba(255, 255, 255, 0.4);
+  --bg-glass-panel: rgba(255, 255, 255, 0.7);
+  --border-glass: rgba(255, 255, 255, 0.6);
+  --bg-card: rgba(255, 255, 255, 0.8);
+  --border-card: rgba(255, 255, 255, 0.8);
+  --border-app-container: #f1f5f9;
+}
+
+.dark {
+  --bg-body: radial-gradient(circle at 10% 10%, #1e1b4b 0%, #0f172a 40%, #171717 100%);
+  --bg-app: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --bg-glass: rgba(15, 23, 42, 0.6);
+  --bg-glass-panel: rgba(15, 23, 42, 0.85);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --bg-card: rgba(30, 41, 59, 0.8);
+  --border-card: rgba(255, 255, 255, 0.05);
+  --border-app-container: #1e293b;
+}
+
 @layer base {
   body {
-    @apply antialiased m-0 p-0 font-sans text-gray-900;
-    background: radial-gradient(circle at 10% 10%, #dbeafe 0%, #ffffff 40%, #f3e8ff 100%);
+    @apply antialiased m-0 p-0 font-sans;
+    background: var(--bg-body);
     background-attachment: fixed;
+    color: var(--text-main);
     min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+    background-color: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.07);
   }
   .glass-dark {
     @apply bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_4px_16px_0_rgba(0,0,0,0.05)];
@@ -31,10 +64,19 @@
     @apply bg-blue-500/70 backdrop-blur-2xl border border-white/40 shadow-[0_8px_32px_0_rgba(59,130,246,0.25)];
   }
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-3xl border-t border-white/60 shadow-[0_-10px_40px_rgba(0,0,0,0.05)];
+    background-color: var(--bg-glass-panel);
+    backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border-glass);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
   }
   .glass-btn {
-    @apply bg-white/50 backdrop-blur-md border border-white/50 shadow-sm hover:bg-white/70 transition-all;
+    background-color: var(--bg-glass);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-glass);
+    transition: all 0.3s;
+  }
+  .glass-btn:hover {
+    background-color: var(--bg-card);
   }
 }
 
@@ -56,10 +98,10 @@
 
 /* App container to mock mobile view on desktop */
 .app-container {
-  max-width: 420px;
+  max-width: 540px;
   margin: 0 auto;
   min-height: 100vh;
-  background: white;
+  background: var(--bg-app);
   position: relative;
   box-shadow: 0 0 20px rgba(0,0,0,0.05);
 }
@@ -70,6 +112,6 @@
     border-radius: 40px;
     margin: 20px auto;
     overflow: hidden;
-    border: 12px solid #f1f5f9;
+    border: 12px solid var(--border-app-container, #f1f5f9);
   }
 }

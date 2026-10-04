@@ -22,7 +22,6 @@ exports.awardPointsForTask = async (userId, taskId, difficulty) => {
     newRankPoints -= POINTS_PER_RANK[newRankIndex];
     newRankIndex++;
     rankUps++;
-    newBalance += REWARDS_PER_RANK[newRankIndex];
   }
   
   // Handle GOD rank (max rank)
@@ -34,7 +33,6 @@ exports.awardPointsForTask = async (userId, taskId, difficulty) => {
   // Update user atomically if possible, but save() is fine here
   user.rankPoints = newRankPoints;
   user.rankIndex = newRankIndex;
-  user.balance = newBalance;
   user.totalTasksCompleted += 1;
   user.inactiveDays = 0; // Reset inactive streak
   await user.save();
@@ -47,20 +45,6 @@ exports.awardPointsForTask = async (userId, taskId, difficulty) => {
     reason: 'Hoàn thành task',
     referenceId: taskId
   });
-
-  // Create transactions for rank up rewards
-  if (rankUps > 0) {
-    let totalReward = 0;
-    for (let i = 0; i < rankUps; i++) {
-       totalReward += REWARDS_PER_RANK[user.rankIndex - i];
-    }
-    await Transaction.create({
-      userId,
-      type: 'earn',
-      amount: totalReward,
-      reason: `Thưởng lên rank ${RANK_NAMES[user.rankIndex]}`,
-    });
-  }
   
   // Broadcast update
   const { broadcastLeaderboardUpdate } = require('../sockets/socket');
@@ -138,4 +122,39 @@ exports.processDailyInactivityPenalties = async () => {
     broadcastLeaderboardUpdate();
   }
   console.log(`Processed inactivity penalties for ${updatedUsers} users.`);
+};
+
+exports.claimRankReward = async (userId, targetRankIndex) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error('User not found');
+  
+  if (user.rankIndex < targetRankIndex) {
+    throw new Error('Chưa đạt cấp độ này');
+  }
+  
+  if (user.claimedRanks && user.claimedRanks.includes(targetRankIndex)) {
+    throw new Error('Đã nhận thưởng');
+  }
+  
+  const reward = REWARDS_PER_RANK[targetRankIndex] || 0;
+  if (reward === 0) {
+    throw new Error('Không có phần thưởng cho cấp độ này');
+  }
+  
+  user.balance += reward;
+  if (!user.claimedRanks) user.claimedRanks = [];
+  user.claimedRanks.push(targetRankIndex);
+  await user.save();
+  
+  await Transaction.create({
+    userId,
+    type: 'earn',
+    amount: reward,
+    reason: `Thưởng lên rank ${RANK_NAMES[targetRankIndex]}`,
+  });
+  
+  const { broadcastLeaderboardUpdate } = require('../sockets/socket');
+  broadcastLeaderboardUpdate();
+  
+  return { newBalance: user.balance, reward, claimedRanks: user.claimedRanks };
 };

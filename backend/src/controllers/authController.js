@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
     
     res.status(201).json({ accessToken, refreshToken, user: { 
       id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl,
-      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance
+      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance, claimedRanks: user.claimedRanks || []
     } });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
     
     res.json({ accessToken, refreshToken, user: { 
       id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl,
-      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance
+      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance, claimedRanks: user.claimedRanks || []
     } });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -87,7 +87,7 @@ exports.googleAuth = async (req, res) => {
     
     res.json({ accessToken, refreshToken, user: { 
       id: user._id, email: user.email, displayName: user.displayName, avatarUrl: user.avatarUrl,
-      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance
+      rankPoints: user.rankPoints, rankIndex: user.rankIndex, balance: user.balance, claimedRanks: user.claimedRanks || []
     } });
   } catch (error) {
     console.error(error);
@@ -127,5 +127,16 @@ exports.logout = async (req, res) => {
     res.json({ message: 'Logged out' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.claimReward = async (req, res) => {
+  try {
+    const { targetRankIndex } = req.body;
+    const { claimRankReward } = require('../services/gamificationService');
+    const result = await claimRankReward(req.user.id, targetRankIndex);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
